@@ -67,16 +67,23 @@ def add_product():
     quantity = req.get("quantity")
 
     if not name or not price or not price or not description or not quantity:
-      return jsonify(message="Please fill in all fields!"), 400
+      return jsonify(message="Please fill in all required fields!"), 400
 
     try:
       newProduct = Products(name, price, description, quantity)
       db.session.add(newProduct)
-      db.session.commit()
+      db.session.commit() # untuk save ke databasenya
       return jsonify(message=f"Success adding {name} as a new product"), 201
     except Exception as e:
       print(e)
       return jsonify(message=f"Something went wrong! {e}")
+
+@app.get("/products")
+def fetch_products():
+  products = Products.query.all()
+  products_schema = ProductSchema(many=True)
+  result = products_schema.dump(products)
+  return jsonify(result), 200
 
 if __name__ == "__main__":
   app.run(debug=True)
