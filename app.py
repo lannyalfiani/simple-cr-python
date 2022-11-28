@@ -113,7 +113,7 @@ def fetch_products():
       result = products_schema.dump(products)
       return jsonify(result), 200
     else:
-      return jsonify(message='Bad request, params is not recognised!'), 400
+      return jsonify(message='Bad request, query string is not recognised!'), 400
   except Exception as error:
     return jsonify(message=f"Something went wrong! {error}"), 500
 
