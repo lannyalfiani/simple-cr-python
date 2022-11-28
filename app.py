@@ -1,9 +1,9 @@
 from flask import Flask, request, jsonify
-from flask_sqlalchemy import SQLAlchemy
+from flask_sqlalchemy import SQLAlchemy # ORM
 from flask_migrate import Migrate
 from datetime import datetime
 from dotenv import load_dotenv
-from flask_marshmallow import Marshmallow
+from flask_marshmallow import Marshmallow # untuk convert python class instances ke object yg bisa jadi JSON
 from sqlalchemy import desc
 import os
 
@@ -29,7 +29,7 @@ class Products(db.Model):
   price = db.Column(db.Integer, nullable=False)
   description = db.Column(db.String, nullable=False)
   quantity = db.Column(db.Integer, nullable=False)
-  date_added = db.Column(db.DateTime, default=datetime.utcnow) # tetap butuh date untuk sort
+  date_added = db.Column(db.DateTime, default=datetime.utcnow) # tetap butuh date untuk order by newest
 
   # constructor object (self = instance-nya)
   def __init__(self, name, price, description, quantity):
@@ -56,7 +56,7 @@ class ProductSchema(ma.Schema):
 def index():
   return {"message": "Hello World, server is up!"}
 
-# endpoint POST product
+# POST product
 @app.post("/products")
 def add_product():
   if request.is_json:
@@ -67,16 +67,55 @@ def add_product():
     quantity = req.get("quantity")
 
     if not name or not price or not price or not description or not quantity:
-      return jsonify(message="Please fill in all fields!"), 400
+      return jsonify(message="Please fill in all required fields!"), 400
 
     try:
       newProduct = Products(name, price, description, quantity)
       db.session.add(newProduct)
-      db.session.commit()
+      db.session.commit() # untuk commit/save ke DB
       return jsonify(message=f"Success adding {name} as a new product"), 201
     except Exception as e:
       print(e)
       return jsonify(message=f"Something went wrong! {e}")
+
+#GET products
+@app.get("/products")
+def fetch_products():
+  try:
+    if request.args['query'] == 'date_added' and request.args['sort'] == 'newest':
+      products = Products.query.order_by(Products.date_added.desc()).all()
+      product_schema = ProductSchema()
+      products_schema = ProductSchema(many=True)
+      result = products_schema.dump(products)
+      return jsonify(result), 200
+    elif request.args['query'] == 'price' and request.args['sort'] == 'highest':
+      products = Products.query.order_by(Products.price.desc()).all()
+      product_schema = ProductSchema()
+      products_schema = ProductSchema(many=True)
+      result = products_schema.dump(products)
+      return jsonify(result), 200
+    elif request.args['query'] == 'price' and request.args['sort'] == 'lowest':
+      products = Products.query.order_by(Products.price).all()
+      product_schema = ProductSchema()
+      products_schema = ProductSchema(many=True)
+      result = products_schema.dump(products)
+      return jsonify(result), 200
+    elif request.args['query'] == 'name'and request.args['sort'] == 'a-z':
+      products = Products.query.order_by(Products.name).all()
+      product_schema = ProductSchema()
+      products_schema = ProductSchema(many=True)
+      result = products_schema.dump(products)
+      return jsonify(result), 200
+    elif request.args['query'] == 'name' and request.args['sort'] == 'z-a':
+      products = Products.query.order_by(Products.name.desc()).all()
+      product_schema = ProductSchema()
+      products_schema = ProductSchema(many=True)
+      result = products_schema.dump(products)
+      return jsonify(result), 200
+    else:
+      return jsonify(message='Bad request, params is not recognised!'), 400
+  except Exception as error:
+    return jsonify(message=f"Something went wrong! {error}"), 500
 
 if __name__ == "__main__":
   app.run(debug=True)
