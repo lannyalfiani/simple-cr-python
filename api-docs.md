@@ -13,7 +13,7 @@
 
 ## 1. GET /
 ### Description
-- Mengecek server berjalan
+- To check if the server is running
 #### Response
 _Response 200 - OK_
 - Body
@@ -26,7 +26,7 @@ _Response 200 - OK_
 
 ## 2. POST /products
 ### Description
-- Menambahkan produk
+- Add a new prodict
 
 #### Request
 
@@ -66,15 +66,15 @@ _Response 400 - Bad Request_
 
 ## 2. GET /products?query={object}&sort={tipe-sort}
 
-1. Mengurutkan berdasarkan produk terbaru
+1. Sort products from newest to oldest
     - **/products?query=date_added&sort=newest**
-2. Mengurutkan berdasarkan harga produk termurah
+2. Sort products from lowest price
     - **/products?query=price&sort=lowest**
-3. Mengurutkan berdasarkan harga produk termahal
+3. Sort products from highest price
     - **/products?query=price&sort=highest**
-4. Mengurutkan berdasarkan nama produk (a-z)
+4. Sort products by its name (a-z)
     - **/products?query=name&sort=a-z**
-5. Mengurutkan berdasarkan nama produk (z-a)
+5. Sort products by its name (z-a)
     - **/products?query=name&sort=z-a**
 
 #### Response
