@@ -20,7 +20,7 @@ _Disclaimer: This is the first time ever I'm using python (learned on the go)_
 4. Create a database in postgre with `product` as the name
     - Once you run the project, the migration and table creation will run by itself
 5. Create a `.env` file
-    - Copy paste the content from .env.template file
+    - Copy paste the content from `.env.template` file
     - Fill in `SECRETKEY` as anything you wish (no need to change anything for the rest)
 6. Run the project
     ```
