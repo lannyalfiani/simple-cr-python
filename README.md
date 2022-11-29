@@ -9,9 +9,13 @@ _Disclaimer: This is the first time ever I'm using python (learned on the go)_
 
 ## How to Use
 1. Clone this project
-2. See list of dependencies 
+2. Create a new virtual environment in python3 
     ```
-      pip list
+      python3.10 -m venv venv
+    ```
+3. Activate the virtual environment
+    ```
+        source venv/bin/activate
     ```
 3. Install all dependencies 
     ```
@@ -31,4 +35,4 @@ _Disclaimer: This is the first time ever I'm using python (learned on the go)_
 
 ---
 
-Notes: Don't forget to create your own environment variable and install the relevant version of dependencies.
+Notes: Docker is also available.
